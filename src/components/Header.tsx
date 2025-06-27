@@ -1,9 +1,28 @@
 
-import { Bell, Search, Settings, User } from 'lucide-react';
+import { Bell, Search, Settings, User, LogIn } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useState } from 'react';
 
-export const Header = () => {
+interface HeaderProps {
+  currentUser?: any;
+  onSearchClick: () => void;
+  onNotificationClick: () => void;
+  onSettingsClick: () => void;
+  onLoginClick: () => void;
+  onNavClick: (section: string) => void;
+  activeSection: string;
+}
+
+export const Header = ({ 
+  currentUser, 
+  onSearchClick, 
+  onNotificationClick, 
+  onSettingsClick, 
+  onLoginClick,
+  onNavClick,
+  activeSection 
+}: HeaderProps) => {
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
@@ -17,18 +36,38 @@ export const Header = () => {
             </div>
             
             <nav className="hidden md:flex items-center gap-6">
-              <a href="#" className="text-gray-700 hover:text-blue-600 font-medium transition-colors">
+              <button 
+                onClick={() => onNavClick('dashboard')}
+                className={`font-medium transition-colors ${
+                  activeSection === 'dashboard' ? 'text-blue-600' : 'text-gray-700 hover:text-blue-600'
+                }`}
+              >
                 Dashboard
-              </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => onNavClick('projects')}
+                className={`font-medium transition-colors ${
+                  activeSection === 'projects' ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'
+                }`}
+              >
                 Projects
-              </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => onNavClick('team')}
+                className={`font-medium transition-colors ${
+                  activeSection === 'team' ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'
+                }`}
+              >
                 Team
-              </a>
-              <a href="#" className="text-gray-500 hover:text-blue-600 font-medium transition-colors">
+              </button>
+              <button 
+                onClick={() => onNavClick('reports')}
+                className={`font-medium transition-colors ${
+                  activeSection === 'reports' ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'
+                }`}
+              >
                 Reports
-              </a>
+              </button>
             </nav>
           </div>
 
@@ -37,28 +76,39 @@ export const Header = () => {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search tasks..."
-                className="pl-10 w-64 bg-gray-50/50 border-gray-200/50 focus:bg-white"
+                className="pl-10 w-64 bg-gray-50/50 border-gray-200/50 focus:bg-white cursor-pointer"
+                onClick={onSearchClick}
+                readOnly
               />
             </div>
             
-            <Button variant="ghost" size="sm" className="relative">
+            <Button variant="ghost" size="sm" className="relative" onClick={onNotificationClick}>
               <Bell className="h-5 w-5 text-gray-600" />
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                 3
               </span>
             </Button>
             
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" onClick={onSettingsClick}>
               <Settings className="h-5 w-5 text-gray-600" />
             </Button>
             
             <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-                <span className="hidden md:block text-sm font-medium text-gray-700">John Doe</span>
-              </Button>
+              {currentUser ? (
+                <Button variant="ghost" size="sm" className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                    <User className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="hidden md:block text-sm font-medium text-gray-700">
+                    {currentUser.name}
+                  </span>
+                </Button>
+              ) : (
+                <Button variant="ghost" size="sm" onClick={onLoginClick} className="flex items-center gap-2">
+                  <LogIn className="h-4 w-4 text-gray-600" />
+                  <span className="hidden md:block text-sm font-medium text-gray-700">Login</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
